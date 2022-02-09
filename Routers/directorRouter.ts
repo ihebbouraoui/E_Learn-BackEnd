@@ -1,0 +1,49 @@
+const Director = require('../Models/directorModel');
+const router = require("express").Router();
+const bcrypt = require('bcryptjs');
+
+router.post('/addDirector', async (req:any, res:any) => {
+	const isEmailExist = await Director.findOne({mail_Director : req.body.mail_Director});
+	if (isEmailExist)
+		return res.status(400).json({msg : 'email already exist'})
+
+	const salt = await bcrypt.genSalt(10);
+	const hashedPassword = await bcrypt.hash(req.body.password_Director , salt);
+
+	await new Director({
+		name_Director: req.body.name_Director,
+		mail_Director: req.body.mail_Director,
+		username_Director: req.body.username_Director,
+		tel_Director: req.body.tel_Director,
+		password_Director: hashedPassword
+	})
+	.save()
+	.then(
+		() => res.status(200).json({'msg': "add"}),
+		(err:any) => res.status(500).json({'msg': err})
+	)
+})
+
+router.put('/modifier/:id', async (req:any, res:any) => {
+	await Director.findByIdAndUpdate(req.params.id, req.body).then(
+		(director:any) => res.status(200).json({"msg": 'director updated successfully', director}),
+		(err:any) => res.status(400).json({"msg": err})
+	)
+});
+
+router.delete('/delete/:id', async (req:any, res:any) => {
+	await Director.findByIdAndDelete(req.params.id).then(
+		() => res.status(200).json({"msg": 'director deleted successfully'}),
+		(err:any) => res.status(400).json({"msg": err})
+	)
+});
+
+router.get('/', async (req:any, res:any) => {
+	await Director.find().select("-password_Director").then(
+		(rec:any) => {
+			if (rec) res.status(200).json(rec);
+			else res.status(400).json({msg: 'error'})
+		}
+	)
+})
+module.exports = router;
