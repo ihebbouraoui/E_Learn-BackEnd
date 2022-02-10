@@ -24,7 +24,6 @@ const student =require('./Routers/etudiantRouter')
 app.use("/director",director);
 app.use("/prof",prof)
 app.use("/student",student)
-
 //*Connect to DB
 mongoose.connect(
 	"mongodb+srv://iheb:21509723@cluster0.jfobh.mongodb.net/pfe?retryWrites=true&w=majority",

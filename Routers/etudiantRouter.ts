@@ -54,5 +54,22 @@ routerStudent.get('/detail/:id', async (req:any, res:any) => {
 	)
 })
 
+routerStudent.get('/filterStudent', async (req: any, res: any) => {
+
+	return await student.find({
+		name_student: {$regex: req.query.name_student},
+		mail_student: {$regex: req.query.mail_student},
+		username_student: {$regex: req.query.username_student},
+		tel_student: {$regex: req.query.tel_student},
+	})
+	.then((rec: any) => {
+		if (rec) res.status(200).json(rec);
+		else res.status(400).json({msg: 'error'})
+	})
+
+})
+
+
+
 
 module.exports = routerStudent;
