@@ -5,7 +5,12 @@ const { Schema } = mongoose;
 const mongoAbonnement = require('mongoose');
 
 const abonnementSchema = new mongoAbonnement.Schema({
-	test: String,
+	num: String,
+	duration:String,
+	value:String,
+	subscribe_start:String,
+	subscribe_end:String,
+	rest_duration:String,
 	profId: {type:Schema.Types.ObjectId,ref:'Prof'}
 
 

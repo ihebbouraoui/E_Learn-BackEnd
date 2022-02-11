@@ -62,7 +62,12 @@ rotProf.get('/filterProf', async (req: any, res: any) => {
 rotProf.post('/new', async (req: any, res: any) => {
 	const prof = await Prof.findById(req.query._id)
 	return await new Abonemment({
-		test: req.body.test,
+		num: req.body.num,
+		duration: req.body.duration,
+		value: req.body.value,
+		subscribe_start: req.body.subscribe_start,
+		subscribe_end: req.body.subscribe_end,
+		rest_duration: req.body.rest_duration,
 		profId: req.query._id
 	})
 	.save()
@@ -95,6 +100,24 @@ rotProf.get('/abonnement', async (req: any, res: any) => {
 	)
 
 })
- rotProf
+
+rotProf.get('/filterAbonnement', async (req: any, res: any) => {
+	return await Abonemment.find({
+		num: {$regex: req.query.num},
+		duration: {$regex: req.query.duration},
+		value: {$regex: req.query.value},
+		subscribe_start: {$regex: req.query.subscribe_start},
+		subscribe_end: {$regex: req.query.subscribe_end},
+		rest_duration: {$regex: req.query.rest_duration},
+	}).populate("profId")
+	.then((rec: any) => {
+		if (rec) res.status(200).json(rec);
+		else res.status(400).json({msg: 'non'})
+		console.log(rec)
+	})
+
+
+})
+
 
 module.exports = rotProf;
