@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
+import * as mongoose from "mongoose";
+
+const { Schema } = mongoose;
 
 const mongoAbonnement = require('mongoose');
-const mongoproff = require("mongoose");
-const { Schema } = mongoose;
 
 const abonnementSchema = new mongoAbonnement.Schema({
 	test: String,
-	profId: String
+	profId: {type:Schema.Types.ObjectId,ref:'Prof'}
 
 
 });
