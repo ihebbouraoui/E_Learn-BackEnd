@@ -1,3 +1,6 @@
+import * as mongoose from "mongoose";
+const { Schema } = mongoose;
+
 const mongoStudent = require('mongoose');
 const studentSchema = new mongoStudent.Schema({
 	name_student: String,

@@ -1,4 +1,3 @@
-import {Router} from "express";
 
 const express = require("express");
 const app = express();
@@ -18,12 +17,16 @@ app.use(express.json());
 
 //* Routers imports
 const director = require("./Routers/directorRouter");
-const prof=require("./Routers/profRouter")
-const student =require('./Routers/etudiantRouter')
+const prof=require("./Routers/profRouter");
+const student =require('./Routers/etudiantRouter');
+const transfer=require('./Routers/TransferRouter');
+const user=require('./Routers/UserRouter')
 //* Routers middleware
 app.use("/director",director);
 app.use("/prof",prof)
 app.use("/student",student)
+app.use("/transfer",transfer)
+app.use('/user',user)
 //*Connect to DB
 mongoose.connect(
 	"mongodb+srv://iheb:21509723@cluster0.jfobh.mongodb.net/pfe?retryWrites=true&w=majority",

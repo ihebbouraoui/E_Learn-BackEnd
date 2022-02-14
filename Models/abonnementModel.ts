@@ -11,7 +11,7 @@ const abonnementSchema = new mongoAbonnement.Schema({
 	subscribe_start:String,
 	subscribe_end:String,
 	rest_duration:String,
-	profId: {type:Schema.Types.ObjectId,ref:'Prof'}
+	userId: {type:Schema.Types.ObjectId,ref:'User'}
 
 
 });
