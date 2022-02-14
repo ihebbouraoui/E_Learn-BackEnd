@@ -10,6 +10,8 @@ const userSchema = new mongoUser.Schema({
 	password:String,
 	role:String,
 	subscribe:[{type:Schema.Types.ObjectId,ref:'Abonnement'}],
-
+	transaction:[{type:Schema.Types.ObjectId,ref:'Transfer'}],
+	chapter:[{type:Schema.Types.ObjectId,ref:'Chapter'}],
+	resource:[{type:Schema.Types.ObjectId,ref:'Resource'}]
 });
 module.exports = mongoUser.model('User', userSchema)

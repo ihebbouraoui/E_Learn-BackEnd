@@ -7,9 +7,9 @@ const TransferSchema = new mongoTransfer.Schema({
 	ref:String,
 	type: String,
 	date_command: String,
-	vendorId: {type:Schema.Types.ObjectId,ref:'Prof'},
-	PurchaserId: {type:Schema.Types.ObjectId,ref:'student'},
-	ifPurchaserProf: {type:Schema.Types.ObjectId,ref:'Prof'}
+	vendorId: {type:Schema.Types.ObjectId,ref:'User'},
+	PurchaserId: {type:Schema.Types.ObjectId,ref:'User'},
+
 
 
 });
