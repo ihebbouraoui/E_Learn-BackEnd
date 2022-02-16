@@ -8,14 +8,12 @@ const SubjectProf=require('../Models/subjectModel')
 routerClass.post('/addNewClass', async (req: any, res: any) => {
 	return await new classModel({
 		title: req.body.title,
-		profId:req.query._id,
 	})
 	.save()
 	.then(
 		// (rec:any) => res.status(200).json(rec._id),
-		(rec: any) => setClassForUser(rec).then(
-			() => res.status(200).json({'msg': "success"})
-		),
+		(rec: any) =>
+			() => res.status(200).json({'msg': "success"}),
 		(err: any) => res.status(500).json({'msg': err})
 	)
 })
@@ -24,6 +22,10 @@ const setClassForUser = async (rec: any) => {
 		$push: {class: rec._id}
 	})
 }
+
+
+
+
 //get all class
 routerClass.get('/getClass',async (req:any,res:any)=>{
 	return await  classModel.find().then(
@@ -31,19 +33,54 @@ routerClass.get('/getClass',async (req:any,res:any)=>{
 		(err:any)=>res.status(500).json({'msg':'error'})
 		)
 })
-// add subject to class
+//add student / prof to class
+
+routerClass.put('/classRelation',async (req:any,res:any)=>{
+	await classModel.findByIdAndUpdate(req.query._id, {
+		$push: {
+			studentId: req.query.studentId,
+			profId: req.query.profId
+		}
+		// }).then((rec:any)=>res.status(200).json({'msg':'Succes'}),()=>res.status(500).json({'msg':'error'}))
+	}).then((rec:any)=>setClassToProf(rec).then(()=>setClassToStudent(rec).then((recF:any)=>res.status(200).json({'msg':'ok'}))))
+})
+
+const setClassToProf=async (rec:any)=>{
+	await userModel.findByIdAndUpdate(rec.profId,{
+		$push: {class: rec._id}
+	})
+}
+const setClassToStudent=async (rec:any)=>{
+	await userModel.findByIdAndUpdate(rec.studentId,{
+		$push: {class: rec._id}
+	})
+}
+
+
+
+
 routerClass.post('/newSubject', async (req: any, res: any) => {
 	return await new SubjectProf({
 		title: req.body.title,
-		userId: req.query._id,
-		class: req.query.class
+
 	})
-	.save()
-	.then((rec: any) => setSubjectToProf(rec).then(() => setSubjectToClass(rec).then(() => res.status(200).json({'msg': 'succes'}),
-		() => res.status(500).json({'msg': 'error'})
-	)))
-	// (rec:any) => res.status(200).json(rec._id),
+	.save().then(
+		(rec:any)=>res.status(200).json(rec),
+		()=>res.status(500).json({'msg':'err'})
+	)}
+)
+//subject realtion
+routerClass.put('/subjectRelation',async (req:any,res:any)=>{
+	 await SubjectProf.findByIdAndUpdate(req.query._id, {
+		$push: {
+			userId: req.query.userId,
+			class: req.query.class
+		}
+		// }).then((rec:any)=>res.status(200).json({'msg':'Succes'}),()=>res.status(500).json({'msg':'error'}))
+	}).then((rec:any)=>setSubjectToClass(rec).then(()=>setSubjectToProf(rec).then((recF:any)=>res.status(200).json({'msg':'ok'}))))
 })
+
+
 const setSubjectToProf = async (rec: any) => {
 	await userModel.findByIdAndUpdate(rec.userId, {
 		$push: {subject: rec._id}
@@ -54,6 +91,13 @@ const setSubjectToClass = async (rec: any) => {
 		$push: {subject: rec._id}
 	})
 }
+//get subject
+routerClass.get('/getSubject', async (req: any, res: any) => {
+	await SubjectProf.find().populate('userId').populate('class').then(
+		(rec: any) => res.status(200).json(rec),
+		(err: any) => res.state(500).json({'msg': err})
+	)
+})
 
 //get class
 routerClass.get('/getAllClass', async (req: any, res: any) => {

@@ -1,7 +1,4 @@
 const Transfer = require("../Models/transferModel");
-const ProfTransfer=require("../Models/profModel");
-const studentTransfer=require("../Models/etudiantModel")
-const Prof = require("../Models/profModel");
 const userTransfer = require("../Models/userModel");
 const rootTransfer = require("express").Router();
 rootTransfer.post('/new', async (req: any, res: any) => {
@@ -38,5 +35,12 @@ const test = async (rec: any) => {
 
 
 }
+
+rootTransfer.get('/get',async (req:any,res:any)=>{
+	return await  Transfer.find().then(
+		(rec:any)=>res.status(200).json(rec),
+		(err:any)=>res.status(500).json({'msg':'error'})
+	)
+})
 
 module.exports = rootTransfer;
