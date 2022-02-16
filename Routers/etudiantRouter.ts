@@ -34,6 +34,8 @@ routerStudent.get('/detail/:id', async (req:any, res:any) => {
 routerStudent.get('/filterStudent', async (req: any, res: any) => {
 
 	return await Userr.find({
+		role:'student',
+
 		name: {$regex: req.query.name},
 		mail: {$regex: req.query.mail},
 		username: {$regex: req.query.username},

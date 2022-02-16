@@ -9,9 +9,10 @@ const userSchema = new mongoUser.Schema({
 	tel: String,
 	password:String,
 	role:String,
+	civil_registry:String,
 	subscribe:[{type:Schema.Types.ObjectId,ref:'Abonnement'}],
 	transaction:[{type:Schema.Types.ObjectId,ref:'Transfer'}],
-	chapter:[{type:Schema.Types.ObjectId,ref:'Chapter'}],
-	resource:[{type:Schema.Types.ObjectId,ref:'Resource'}]
+	class:[{type:Schema.Types.ObjectId,ref:'Class'}],
+	subject:[{type:Schema.Types.ObjectId,ref:'Subject'}]
 });
 module.exports = mongoUser.model('User', userSchema)

@@ -1,8 +1,8 @@
 const Abonemment = require('../Models/abonnementModel')
 const UserModel = require('../Models/userModel')
 const rotProf = require("express").Router();
-const ProfChapter = require('../Models/chapterModel')
-const ProfResource=require('../Models/RessourceModel')
+const ProfChapter = require('../Models/ClassModel')
+const profSubject=require('../Models/subjectModel')
 
 
 // Crud Prof
@@ -13,6 +13,8 @@ rotProf.put('/modifier/:id', async (req: any, res: any) => {
 		(err: any) => res.status(400).json({"msg": err})
 	)
 });
+
+
 
 rotProf.delete('/delete/:id', async (req: any, res: any) => {
 	await UserModel.findByIdAndDelete(req.params.id).then(
@@ -31,8 +33,9 @@ rotProf.get('/', async (req: any, res: any) => {
 })
 
 rotProf.get('/filterProf', async (req: any, res: any) => {
-	console.log(req.query)
 	return await UserModel.find({
+		role:'prof',
+
 		name: {$regex: req.query.name},
 		mail: {$regex: req.query.mail},
 		tel: {$regex: req.query.tel},
@@ -43,6 +46,14 @@ rotProf.get('/filterProf', async (req: any, res: any) => {
 	})
 
 })
+
+rotProf.get('/detail', async (req: any, res: any) => {
+	await UserModel.findById(req.query._id).then(
+		(prof: any) => res.status(200).json({ prof}),
+		(err: any) => res.status(400).json({"msg": err})
+	)
+});
+
 
 
 // Prof Subscribe
@@ -81,6 +92,7 @@ rotProf.get('/abonnement', async (req: any, res: any) => {
 
 rotProf.get('/filterAbonnement', async (req: any, res: any) => {
 	return await Abonemment.find({
+
 		num: {$regex: req.query.num},
 		duration: {$regex: req.query.duration},
 		value: {$regex: req.query.value},
@@ -96,26 +108,6 @@ rotProf.get('/filterAbonnement', async (req: any, res: any) => {
 })
 
 
-//Prof add Chapter
-rotProf.post('/newChapter', async (req: any, res: any) => {
-	return await new ProfChapter({
-		title: req.body.title,
-		userId: req.query._id
-	})
-	.save()
-	.then(
-		// (rec:any) => res.status(200).json(rec._id),
-		(rec: any) => setChapterUser(rec).then(
-			() => res.status(200).json({'msg': "success"})
-		),
-		(err: any) => res.status(500).json({'msg': err})
-	)
-})
-const setChapterUser = async (rec: any) => {
-	await UserModel.findByIdAndUpdate(rec.userId, {
-		$push: {chapter: rec._id}
-	})
-}
 
 rotProf.get('/getChapter', async (req: any, res: any) => {
 	await ProfChapter.find().populate('userId').then(
@@ -132,7 +124,7 @@ rotProf.delete('/chapter/delete/:id', async (req: any, res: any) => {
 
 //Prof  Resource
 rotProf.post('/newResource', async (req: any, res: any) => {
-	return await new ProfResource({
+	return await new profSubject({
 		title: req.body.title,
 		userId: req.query._id
 	})
@@ -146,13 +138,13 @@ rotProf.post('/newResource', async (req: any, res: any) => {
 	)
 })
 rotProf.delete('/resource/delete/:id', async (req: any, res: any) => {
-	await ProfResource.findByIdAndDelete(req.params.id).then(
-		() => res.status(200).json({"msg": 'Resource deleted successfully'}),
+	await profSubject.findByIdAndDelete(req.params.id).then(
+		() => res.status(200).json({"msg": 'Subject deleted successfully'}),
 		(err: any) => res.status(400).json({"msg": err})
 	)
 });
 rotProf.get('/getResource', async (req: any, res: any) => {
-	await ProfResource.find().populate('userId').then(
+	await profSubject.find().populate('userId').then(
 		(rec: any) => res.status(200).json(rec),
 		(err: any) => res.state(500).json({'msg': err})
 	)
@@ -162,6 +154,5 @@ const setResourceUser = async (rec: any) => {
 		$push: {resource: rec._id}
 	})
 }
-
 
 module.exports = rotProf;

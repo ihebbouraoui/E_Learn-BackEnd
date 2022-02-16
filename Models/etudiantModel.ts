@@ -7,5 +7,6 @@ const studentSchema = new mongoStudent.Schema({
 	mail_student: String,
 	username_student: String,
 	tel_student: String,
+
 });
 module.exports = mongoStudent.model('student', studentSchema)
