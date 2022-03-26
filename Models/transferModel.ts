@@ -9,9 +9,6 @@ const TransferSchema = new mongoTransfer.Schema({
 	date_command: String,
 	vendorId: {type:Schema.Types.ObjectId,ref:'User'},
 	PurchaserId: {type:Schema.Types.ObjectId,ref:'User'},
-
-
-
 });
 
 

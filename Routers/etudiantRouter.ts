@@ -16,7 +16,7 @@ routerStudent.delete('/delete/:id', async (req:any, res:any) => {
 });
 
 routerStudent.get('/', async (req:any, res:any) => {
-	await Userr.find({role:'student'}).select('-password').then(
+	await Userr.find({role:'student'}).select('-password').populate('class').then(
 		(rec:any) => {
 			if (rec) res.status(200).json(rec);
 			else res.status(400).json({msg: 'error'})

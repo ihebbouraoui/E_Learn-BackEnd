@@ -10,6 +10,9 @@ const userSchema = new mongoUser.Schema({
 	password:String,
 	role:String,
 	civil_registry:String,
+	photo : {
+		type : String
+	},
 	subscribe:[{type:Schema.Types.ObjectId,ref:'Abonnement'}],
 	transaction:[{type:Schema.Types.ObjectId,ref:'Transfer'}],
 	class:[{type:Schema.Types.ObjectId,ref:'Class'}],
