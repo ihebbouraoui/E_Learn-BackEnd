@@ -4,6 +4,16 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
+const http=require("http")
+const server=http.createServer(app)
+const socket=require("socket.io")
+const io=require("socket.io")(server,{
+	cors:{
+		origin:"http://localhost:3001",
+		method:["GET","¨POST"]
+
+	}
+})
 
 dotenv.config();
 
@@ -44,6 +54,20 @@ mongoose.connect(
 		else console.log("connected to db");
 	}
 );
+//
+io.on("connection",(socket:any)=>{
+	socket.emit("me",socket.id)
+
+	socket.on("disconnect",()=>{
+		socket.broadcast.emit("callEnded")
+	})
+	socket.on("callUser",(data:any)=>{
+		io.to(data.UserToCall).emit("callUser",{signal:data.signalData,from:data.from,name:data.name })
+	})
+	socket.on("answerCall",(data:any)=>{
+		io.to((data.to).emit("callAccepted").data.signal)
+	})
+})
 
 
 app.listen(3002, () => console.log("server up"));
