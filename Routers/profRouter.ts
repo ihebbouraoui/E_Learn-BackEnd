@@ -8,7 +8,7 @@ const rotProf = require("express").Router();
 
 rotProf.put('/modifier/:id', async (req: any, res: any) => {
 	await UserModel.findByIdAndUpdate(req.params.id, req.body).then(
-		(prof: any) => res.status(200).json({"msg": 'prof updated successfully', prof}),
+		(prof: any) => res.status(200).json({"msg": 'prof updated successfully'}),
 		(err: any) => res.status(400).json({"msg": err})
 	)
 });

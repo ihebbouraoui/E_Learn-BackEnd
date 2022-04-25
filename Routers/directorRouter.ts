@@ -28,11 +28,8 @@ router.get('/', async (req: any, res: any) => {
 })
 // filter director
 router.get('/filterDirector', async (req: any, res: any) => {
-	console.log(req.query)
-
 	return await Userrr.find({
 		role:'admin',
-
 		name: {$regex: req.query.name},
 		mail: {$regex: req.query.mail},
 		username: {$regex: req.query.username},

@@ -1,26 +1,73 @@
+import * as http from "http";
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
-const http=require("http")
-const server=http.createServer(app)
-const socket=require("socket.io")
-const io=require("socket.io")(server,{
-	cors:{
-		origin:"http://localhost:3001",
-		method:["GET","¨POST"]
-
-	}
-})
-
+const  {Server}=require("socket.io")
 dotenv.config();
-
+const httpServer=http.createServer(app)
 //* ENABLE CORS
 const corsOptions = {
 	exposedHeaders: "Authorization",
 };
+
+const io = require("socket.io")(httpServer, {
+	cors: {
+		origin: "http://localhost:3000/",
+		methods: ["GET", "POST"],
+		allowedHeaders: ["my-custom-header"],
+		credentials: true
+	}
+});
+
+io.on("connection", (socket:any) => {
+	socket.on("join_room", (data:any) => {
+		socket.join(data);
+		console.log(`User with ID: ${socket.id} joined room: ${data}`);
+	});
+
+	socket.on("send_message", (data:any) => {
+		socket.to(data.room).emit("receive_message", data);
+	});
+
+	socket.on("disconnect", () => {
+		console.log("User Disconnected", socket.id);
+	});
+});
+const PORT = process.env.PORT || 3002;
+
+app.get('/', (req:any, res:any) => {
+	res.send('Running');
+});
+
+io.on("connection", (socket:any) => {
+	socket.emit("me", socket.id)
+	console.log(`User Connected: ${socket.id}`);
+
+	socket.on("disconnect", () => {
+		socket.broadcast.emit("callEnded")
+	});
+
+	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
+		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+		console.log(`User to Call: ${userToCall}`);
+		console.log(` signal data: ${signalData}`);
+		console.log(`from: ${from}`);
+		console.log(`name: ${name}`);
+	});
+
+	socket.on("answerCall", (data:any) => {
+		io.to(data.to).emit("callAccepted", data.signal)
+		console.log(`data: ${data}`);
+		console.log(`data_signal: ${data.signal}`);
+
+
+	});
+});
+
+
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -35,6 +82,8 @@ const classRoute=require('./Routers/classRouter')
 const toDoRoute=require('./Routers/toDoRouter')
 const SubjectRoute=require('./Routers/subjectRouter')
 const auth=require('./Routers/auth')
+const announcee=require('./Routers/announceRouter')
+const message=require('./Routers/messageRoutes')
 //* Routers middleware
 app.use("/director",director);
 app.use("/prof",prof)
@@ -45,6 +94,9 @@ app.use('/class',classRoute)
 app.use('/toDo',toDoRoute)
 app.use('/subject',SubjectRoute)
 app.use('/login',auth)
+app.use('/announce',announcee)
+app.use('/message',message)
+
 //*Connect to DB
 mongoose.connect(
 	"mongodb+srv://iheb:21509723@cluster0.jfobh.mongodb.net/pfe?retryWrites=true&w=majority",
@@ -54,20 +106,6 @@ mongoose.connect(
 		else console.log("connected to db");
 	}
 );
-//
-io.on("connection",(socket:any)=>{
-	socket.emit("me",socket.id)
-
-	socket.on("disconnect",()=>{
-		socket.broadcast.emit("callEnded")
-	})
-	socket.on("callUser",(data:any)=>{
-		io.to(data.UserToCall).emit("callUser",{signal:data.signalData,from:data.from,name:data.name })
-	})
-	socket.on("answerCall",(data:any)=>{
-		io.to((data.to).emit("callAccepted").data.signal)
-	})
-})
 
 
-app.listen(3002, () => console.log("server up"));
+httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

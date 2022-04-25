@@ -13,4 +13,3 @@ const signalSchema = new signalModel.Schema({
 });
 module.exports = signalModel.model('Signal', signalSchema)
 
-module.exports = signalModel.model('Signal', signalSchema)
