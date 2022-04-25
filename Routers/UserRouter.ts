@@ -1,10 +1,7 @@
-import {log} from "util";
 
 const User = require('../Models/userModel')
 const rootUser = require("express").Router();
-const class_model = require('../Models/ClassModel')
-const subj_Model = require('../Models/subjectModel')
-const todo_model = require('../Models/toDoModdel')
+const Historyy=require('../Models/HistoryModel')
 
 const crypt = require('bcryptjs');
 
@@ -21,7 +18,23 @@ rootUser.post('/addUser', async (req: any, res: any) => {
 		tel: req.body.tel,
 		role: req.body.role,
 		password: hashedPassword,
-		photo:req.body.photo
+		photo:req.body.photo,
+		status:req.body.status
+	})
+	.save()
+	.then(
+		() => res.status(200).json({'msg': "add"}),
+		(err: any) => res.status(500).json({'msg': err})
+	)
+})
+rootUser.post('/addUserToHistory', async (req: any, res: any) => {
+	await new Historyy({
+		date: req.body.date,
+		adminID: req.body.adminID,
+		userId: req.body.userId,
+		data: req.body.data,
+		type:req.body.type,
+		mailUser:req.body.mailUser
 	})
 	.save()
 	.then(
@@ -30,13 +43,39 @@ rootUser.post('/addUser', async (req: any, res: any) => {
 	)
 })
 
-rootUser.get('/getTodo',async (req:any,res:any)=>{
+rootUser.get('/getHistory', async (req:any, res:any) => {
+	await Historyy.find().populate('userId').populate('adminID').then(
+		(rec:any) => {
+			if (rec) res.status(200).json(rec);
+			else res.status(400).json({msg: 'error'})
+		}
+	)
+})
+rootUser.put('/blockDelete',async (req:any,res:any)=>{
+	await User.findOneAndUpdate({_id:req.body._id},{status:true}).then(
+		(rec:any)=>{
+			if(rec) res.status(200).json(rec);
+			else res.status(500).json({msg:'error'})
+		}
+	)
+})
+rootUser.delete('/deleteHistory',async (req:any,res:any)=>{
+	await Historyy.findOneAndDelete({_id:req.body._id}).then(
+		(rec:any)=>{
+			if(rec) res.status(200).json(rec);
+			else res.status(500).json({msg:'error'})
+		}
+	)
+})
+rootUser.delete('/deleteWithMail',async (req:any,res:any)=>{
+	await User.findOneAndDelete({mail:req.body.mail}).then(
+		(rec:any)=>{
+			if(rec) res.status(200).json({msg:'succes'});
+			else res.status(500).json({msg:'error'})
+		}
+	)
 })
 
-rootUser.get('/testGetTodo',async (req:any,res:any)=>{
-	return await  todo_model.find({subject:req.query.subjectId}).then((rec:any)=>res.status(200).json(rec),
-		()=>res.status(500).json({'msg':'eror'}))
-})
 
 
 

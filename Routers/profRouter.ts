@@ -30,7 +30,14 @@ rotProf.get('/', async (req: any, res: any) => {
 		}
 	)
 })
-
+rotProf.get('/prof', async (req: any, res: any) => {
+	await UserModel.find({role: 'prof',status:true}).populate('subject').then(
+		(rec: any) => {
+			if (rec) res.status(200).json(rec);
+			else res.status(400).json({msg: 'error'})
+		}
+	)
+})
 rotProf.get('/filterProf', async (req: any, res: any) => {
 	return await UserModel.find({
 		role:'prof',
@@ -105,6 +112,14 @@ rotProf.get('/filterAbonnement', async (req: any, res: any) => {
 		console.log(rec)
 	})
 })
+rotProf.put('/delete/prof', async (req: any, res: any) => {
+	await UserModel.findByIdAndUpdate({_id:req.body._id},{status:false}).then(
+		(prof: any) => res.status(200).json({"msg": 'prof updated successfully'}),
+		(err: any) => res.status(400).json({"msg": err})
+	)
+});
+
+
 
 
 

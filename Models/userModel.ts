@@ -16,6 +16,7 @@ const userSchema = new mongoUser.Schema({
 			subscribe:[{type:Schema.Types.ObjectId,ref:'Abonnement'}],
 	transaction:[{type:Schema.Types.ObjectId,ref:'Transfer'}],
 	class:[{type:Schema.Types.ObjectId,ref:'Class'}],
-	subject:[{type:Schema.Types.ObjectId,ref:'Subject'}]
+	subject:[{type:Schema.Types.ObjectId,ref:'Subject'}],
+	status:String,
 });
 module.exports = mongoUser.model('User', userSchema)
