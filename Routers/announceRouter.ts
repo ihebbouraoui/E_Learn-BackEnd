@@ -18,7 +18,7 @@ announceRouter.post('/newAnnounce', async (req: any, res: any) => {
 			photo:req.body.photo,
 			like:req.body.like,
 			data:req.body.data,
-			type:req.body.type
+			category:req.body.category
 
 		})
 		.save().then(

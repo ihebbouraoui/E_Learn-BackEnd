@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const  {Server}=require("socket.io")
 dotenv.config();
+
 const httpServer=http.createServer(app)
 //* ENABLE CORS
 const corsOptions = {
@@ -15,13 +16,11 @@ const corsOptions = {
 
 const io = require("socket.io")(httpServer, {
 	cors: {
-		origin: "http://localhost:3000/",
-		methods: ["GET", "POST"],
-		allowedHeaders: ["my-custom-header"],
-		credentials: true
+		origin: "*",
+		methods: [ "GET", "POST" ]
 	}
 });
-
+//
 io.on("connection", (socket:any) => {
 	socket.on("join_room", (data:any) => {
 		socket.join(data);
@@ -38,35 +37,26 @@ io.on("connection", (socket:any) => {
 });
 const PORT = process.env.PORT || 3002;
 
-app.get('/', (req:any, res:any) => {
-	res.send('Running');
-});
-
-io.on("connection", (socket:any) => {
-	socket.emit("me", socket.id)
-	console.log(`User Connected: ${socket.id}`);
-
-	socket.on("disconnect", () => {
-		socket.broadcast.emit("callEnded")
-	});
-
-	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
-		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
-		console.log(`User to Call: ${userToCall}`);
-		console.log(` signal data: ${signalData}`);
-		console.log(`from: ${from}`);
-		console.log(`name: ${name}`);
-	});
-
-	socket.on("answerCall", (data:any) => {
-		io.to(data.to).emit("callAccepted", data.signal)
-		console.log(`data: ${data}`);
-		console.log(`data_signal: ${data.signal}`);
-
-
-	});
-});
-
+// app.get('/', (req:any, res:any) => {
+// 	res.send('Running');
+// });
+//
+// io.on("connection", (socket:any) => {
+// 	socket.emit("me", (socket.id))
+// 	console.log(socket.id)
+//
+// 	socket.on("disconnect", () => {
+// 		socket.broadcast.emit("callEnded")
+// 	});
+//
+// 	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
+// 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+// 	});
+//
+// 	socket.on("answerCall", (data:any) => {
+// 		io.to(data.to).emit("callAccepted", data.signal)
+// 	});
+// });
 
 
 app.use(cors(corsOptions));
@@ -106,6 +96,31 @@ mongoose.connect(
 		else console.log("connected to db");
 	}
 );
+
+
+app.get('/', (req:any, res:any) => {
+	res.send('Running');
+});
+
+io.on("connection", (socket:any) => {
+	socket.emit("me", socket.id)
+	console.log(socket.id)
+	;
+
+	socket.on("disconnect", () => {
+		socket.broadcast.emit("callEnded")
+	});
+
+	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
+		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+		console.log('sd')
+	});
+
+	socket.on("answerCall", (data:any) => {
+		io.to(data.to).emit("callAccepted", data.signal)
+	});
+});
+
 
 
 httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

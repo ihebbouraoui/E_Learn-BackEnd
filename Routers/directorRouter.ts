@@ -49,9 +49,4 @@ router.put('/updateDirector', async (req: any, res: any) => {
 	)
 });
 
-
-// add new class
-
-
-
 module.exports = router;

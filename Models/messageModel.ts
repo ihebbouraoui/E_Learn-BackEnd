@@ -5,19 +5,25 @@ const MessageModel = require('mongoose');
 
 const MessageSchema = new MessageModel.Schema(
 {
-	message: {
-		text:String,
-		date:String
-	},
-	sender: {
-		type: Schema.Types.ObjectId,
-		ref:'User',
-	},
-	receiver: {
-		type:Schema.Types.ObjectId
-		,ref:'User'
-	},
+	// value:String,
+	// sender: {
+	// 	type: Schema.Types.ObjectId,
+	// 	ref:'User',
+	// },
+	// receiver: {
+	// 	type:Schema.Types.ObjectId
+	// 	,ref:'User'
+	// },
+	messageFrom:String,
+	messageTo:String,
+	values:String,
+	avatarFrom:String,
+	avatrTo:String,
 },
+
+
+
+
 );
 
 module.exports = MessageModel.model('Message', MessageSchema)
