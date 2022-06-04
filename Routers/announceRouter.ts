@@ -3,13 +3,13 @@ const announces = require("../Models/announceModel")
 const Signal = require("../Models/singalModel")
 const Formation = require("../Models/formationModel")
 announceRouter.get('/getAnnounce', async (req: any, res: any) => {
-	return await announces.find().populate("postBy").populate("comment.userId").then(
+	return await announces.find().populate("postBy").populate("comment.userId").populate('userSubmitted').then(
 		(rec: any) => res.status(200).json(rec),
 		(err: any) => res.status(500).json({'msg': 'error'})
 	)
 })
 announceRouter.get('/getAnnounceById', async (req: any, res: any) => {
-	return await announces.find({postBy: req.body.postBy}).populate("postBy").then(
+	return await announces.find({postBy: req.query.postBy}).populate("postBy").populate("userSubmitted.userId").then(
 		(rec: any) => res.status(200).json(rec),
 		(err: any) => res.status(500).json({'msg': 'error'})
 	)
@@ -36,7 +36,9 @@ announceRouter.post('/newAnnounce', async (req: any, res: any) => {
 			photo: req.body.photo,
 			like: req.body.like,
 			data: req.body.data,
-			category: req.body.category
+			category: req.body.category,
+			userSubmitted:{},
+			title:req.body.title
 
 		})
 		.save().then(
@@ -83,11 +85,23 @@ announceRouter.get('/getMyFormationById', async (req: any, res: any) => {
 announceRouter.put('/newCommentaire', async (req: any, res: any) => {
 	return await announces.findByIdAndUpdate(req.body._id, {
 		$push: {
-			"comment":
+			comment:
 				{
 					userId: req.body.userId,
 					data: req.body.data,
 					date: req.body.date
+				}
+
+		}
+	}).then((el: any) => res.status(200).json({'msg': 'success'}), (err: any) => res.status(500).json({err}))
+})
+announceRouter.put('/submit', async (req: any, res: any) => {
+	// const announce= await announces.findById(req.body._id)
+	return await announces.findByIdAndUpdate(req.body._id, {
+		$push: {
+			userSubmitted:
+				{
+					userId: req.body.userId,
 				}
 
 		}

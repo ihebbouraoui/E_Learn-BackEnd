@@ -9,15 +9,17 @@ const announceShchema = new Mongoannounce.Schema({
 	whoLike:{type:Schema.Types.ObjectId,ref:'User'},
 	data:String,
 	category:String,
+	title:String,
 	postBy: {type:Schema.Types.ObjectId,ref:'User'},
 	comment:
 		{
 			userId:{type:Schema.Types.ObjectId,ref:'User'},
 			date:String,
 			data:String
-		}
-
-
+		},
+	userSubmitted:{
+		userId:{type:Schema.Types.ObjectId,ref:'User'}
+	}
 
 });
 module.exports = Mongoannounce.model('Announce', announceShchema)

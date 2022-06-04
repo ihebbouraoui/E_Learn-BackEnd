@@ -113,7 +113,6 @@ io.on("connection", (socket:any) => {
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
-		console.log('sd')
 	});
 
 	socket.on("answerCall", (data:any) => {

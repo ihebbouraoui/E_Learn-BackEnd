@@ -7,8 +7,9 @@ const rotProf = require("express").Router();
 // Crud Prof
 
 rotProf.put('/modifier/:id', async (req: any, res: any) => {
-	await UserModel.findByIdAndUpdate(req.params.id, req.body).then(
-		(prof: any) => res.status(200).json({"msg": 'prof updated successfully'}),
+	await UserModel.findByIdAndUpdate(req.params.id, req.body)
+	.then(
+		(prof: any) => res.status(200).json(prof),
 		(err: any) => res.status(400).json({"msg": err})
 	)
 });
@@ -17,9 +18,11 @@ rotProf.put('/modifier/:id', async (req: any, res: any) => {
 
 rotProf.delete('/delete/:id', async (req: any, res: any) => {
 	await UserModel.findByIdAndDelete(req.params.id).then(
+
 		() => res.status(200).json({"msg": 'prof deleted successfully'}),
 		(err: any) => res.status(400).json({"msg": err})
 	)
+	.save()
 });
 
 rotProf.get('/', async (req: any, res: any) => {
