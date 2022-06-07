@@ -58,6 +58,7 @@ routerr.post('/sendMail', function (req:any, res:any) {
 	});
 });
 
+
 routerr.post("/", async (req:any, res:any) => {
 	try {
 		//* Validate data
@@ -66,7 +67,6 @@ routerr.post("/", async (req:any, res:any) => {
 
 		//* check if user exist
 		let user = await userModelAuth.findOne({ mail: req.body.mail });
-		console.log(user.status)
 		if (!user) return res.status(400).json({ msg: "email or password dosn't exist" });
 		// check if password correct
 		const isCorrectPassword = await bcrypt.compare(
@@ -85,6 +85,7 @@ routerr.post("/", async (req:any, res:any) => {
 			'RANDOM_TOKEN_SECRET',
 			);
 		  if (user && isCorrectPassword && user.status==='true'){
+
 			  res.status(200).json({
 				  user: user,
 				  token: token
@@ -95,5 +96,9 @@ routerr.post("/", async (req:any, res:any) => {
 		res.status(400).json({'msg':'try again later'});
 	}
 });
+routerr.post("/uploads", async (req:any, res:any) => {
+
+})
+
 
 module.exports = routerr;

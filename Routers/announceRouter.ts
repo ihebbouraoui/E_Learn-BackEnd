@@ -38,7 +38,8 @@ announceRouter.post('/newAnnounce', async (req: any, res: any) => {
 			data: req.body.data,
 			category: req.body.category,
 			userSubmitted:{},
-			title:req.body.title
+			title:req.body.title,
+			file:req.body.file
 
 		})
 		.save().then(

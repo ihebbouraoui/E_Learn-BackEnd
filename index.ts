@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const  {Server}=require("socket.io")
 dotenv.config();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(express.static("uploads"));
 
 const httpServer=http.createServer(app)
 //* ENABLE CORS
@@ -215,5 +218,5 @@ app.post("/api/logout", verify, (req:any, res:any) => {
 
 
 
-
+app.use('/uploads',express.static('uploads'));
 httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

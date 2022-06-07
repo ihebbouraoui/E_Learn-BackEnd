@@ -19,7 +19,8 @@ const announceShchema = new Mongoannounce.Schema({
 		},
 	userSubmitted:{
 		userId:{type:Schema.Types.ObjectId,ref:'User'}
-	}
+	},
+	file:String
 
 });
 module.exports = Mongoannounce.model('Announce', announceShchema)
