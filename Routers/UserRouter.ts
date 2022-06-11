@@ -20,6 +20,8 @@ rootUser.post('/addUser', async (req: any, res: any) => {
 		username: req.body.username,
 		tel: req.body.tel,
 		role: req.body.role,
+        specialite:req.body.specialite,
+		cin:req.body.cin,
 		password: hashedPassword,
 		photo:req.body.photo,
 		status:req.body.status

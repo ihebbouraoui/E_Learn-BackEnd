@@ -8,8 +8,10 @@ const userSchema = new mongoUser.Schema({
 	username: String,
 	tel: String,
 	password:String,
+	cin:String,
+	ville:String,
+	specialite:String,
 	role:String,
-	civil_registry:String,
 	photo : {
 		type : String
 	},

@@ -9,36 +9,14 @@ const nodemailer = require("nodemailer");
 
 dotenvv.config();
 routerr.post('/sendMail', function (req:any, res:any) {
-	async function myCustomMethod(ctx:any){
-		let cmd = await ctx.sendCommand(
-			'AUTH PLAIN ' +
-			Buffer.from(
-				'\u0000' + ctx.auth.credentials.user + '\u0000' + ctx.auth.credentials.pass,
-				'utf-8'
-			).toString('base64')
-		);
-
-		if(cmd.status < 200 || cmd.status >=300){
-			throw new Error('Failed to authenticate user: ' + cmd.text);
-		}
-	}
 	let transporter = nodemailer.createTransport({
 		host: 'smtp.gmail.com',
 		port: 465,
 		secure: true,
 		auth: {
-			type: 'custom',
-			method: 'MY-CUSTOM-METHOD', // forces Nodemailer to use your custom handler
-			user: 'username',
-			pass: 'verysecret',
-			options: {
-				clientId: 'verysecret',
-				applicationId: 'my-app'
-			}
+			user: 'ihebbouraoui1234@gmail.com',
+			pass: 'cjthjpeniguqbhuv',
 
-		},
-		customAuth: {
-			'MY-CUSTOM-METHOD': myCustomMethod
 		}
 	});
 	let mailOptions = {
