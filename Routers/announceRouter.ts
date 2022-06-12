@@ -2,6 +2,7 @@ const announceRouter = require("express").Router();
 const announces = require("../Models/announceModel")
 const Signal = require("../Models/singalModel")
 const Formation = require("../Models/formationModel")
+const Category=require("../Models/category")
 announceRouter.get('/getAnnounce', async (req: any, res: any) => {
 	return await announces.find().populate("postBy").populate("comment.userId").populate('userSubmitted').then(
 		(rec: any) => res.status(200).json(rec),
@@ -62,6 +63,25 @@ announceRouter.post('/signal', async (req: any, res: any) => {
 		)
 	}
 )
+announceRouter.post('/newCategory', async (req: any, res: any) => {
+		return await new Category({
+			title:req.body.title,
+			icon:req.body.icon
+		})
+		.save().then(
+			(rec: any) => res.status(200).json(rec),
+			() => res.status(500).json({'msg': 'err'})
+		)
+	}
+)
+announceRouter.get('/getCategory', async (req: any, res: any) => {
+
+	return await Category.find().then(
+		(rec: any) =>res.status(200).json(rec) ,
+		(err: any) => res.status(500).json({'msg': 'error'})
+	)
+})
+
 
 announceRouter.post('/newFormation', async (req: any, res: any) => {
 		return await new Formation({

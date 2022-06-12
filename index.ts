@@ -1,4 +1,5 @@
 import * as http from "http";
+const fetch=require('node-fetch')
 const UserModelTest=require('../backend/Models/userModel')
 const express = require("express");
 const app = express();
@@ -10,7 +11,6 @@ dotenv.config();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(express.static("uploads"));
-
 const httpServer=http.createServer(app)
 //* ENABLE CORS
 const corsOptions = {
@@ -23,7 +23,7 @@ const io = require("socket.io")(httpServer, {
 		methods: [ "GET", "POST" ]
 	}
 });
-//
+
 io.on("connection", (socket:any) => {
 	socket.on("join_room", (data:any) => {
 		socket.join(data);
@@ -40,26 +40,6 @@ io.on("connection", (socket:any) => {
 });
 const PORT = process.env.PORT || 3002;
 
-// app.get('/', (req:any, res:any) => {
-// 	res.send('Running');
-// });
-//
-// io.on("connection", (socket:any) => {
-// 	socket.emit("me", (socket.id))
-// 	console.log(socket.id)
-//
-// 	socket.on("disconnect", () => {
-// 		socket.broadcast.emit("callEnded")
-// 	});
-//
-// 	socket.on("callUser", ({ userToCall, signalData, from, name }:any) => {
-// 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
-// 	});
-//
-// 	socket.on("answerCall", (data:any) => {
-// 		io.to(data.to).emit("callAccepted", data.signal)
-// 	});
-// });
 
 
 app.use(cors(corsOptions));
@@ -215,8 +195,59 @@ app.post("/api/logout", verify, (req:any, res:any) => {
 	 refreshTokens = refreshTokens.filter((token:any) => token !== refreshToken);
 	res.status(200).json("You logged out successfully.");
 });
-
-
-
 app.use('/uploads',express.static('uploads'));
+const API_KEY = 'f9a7841146ef40494b089c1305b466d6a1ea6bc0b0506d77b0cdb2892d089924';
+
+const headers = {
+	Accept: "application/json",
+	"Content-Type": "application/json",
+	Authorization: "Bearer " + API_KEY,
+};
+const getRoom = (room:any) => {
+	return fetch(`https://api.daily.co/v1/rooms/${room}`, {
+		method: "GET",
+		headers,
+	})
+	.then((res:any) => res.json())
+	.then((json:any) => {
+		return json;
+	})
+	.catch((err:any) => console.error("error:" + err));
+};
+
+const createRoom = (room:any) => {
+	return fetch("https://api.daily.co/v1/rooms", {
+		method: "POST",
+		headers,
+		body: JSON.stringify({
+			name: room,
+			properties: {
+				enable_screenshare: true,
+				enable_chat: true,
+				start_video_off: true,
+				start_audio_off: false,
+				lang: "en",
+			},
+		}),
+	})
+	.then((res:any) => res.json())
+	.then((json:any) => {
+		return json;
+	})
+	.catch((err:any) => console.log("error:" + err));
+};
+
+app.get("/video-call/:id", async function (req:any, res:any) {
+	const roomId = req.params.id;
+	const room = await getRoom(roomId);
+
+	if (room.error) {
+		const newRoom = await createRoom(roomId);
+		res.status(200).send(newRoom);
+	} else {
+		res.status(200).send(room);
+	}
+});
+
+
 httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
