@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Userrr = require('../Models/userModel')
+const User = require("../Models/userModel");
 
 
 // update director with id
@@ -19,7 +20,7 @@ router.delete('/delete/:id', async (req: any, res: any) => {
 });
 //get all director
 router.get('/', async (req: any, res: any) => {
-	await Userrr.find({role: 'admin'}).select("-password").then(
+	await Userrr.find({role: 'admin',status:'true'}).select("-password").then(
 		(rec: any) => {
 			if (rec) res.status(200).json(rec);
 			else res.status(400).json({msg: 'error'})
@@ -43,6 +44,9 @@ router.get('/filterDirector', async (req: any, res: any) => {
 })
 // update with mail
 router.put('/updateDirector', async (req: any, res: any) => {
+	const isPhone=await User.findOne({tel:req.body.tel})
+	if(isPhone)
+		return res.status(420).json({'msg': 'phone already exist'})
 	await Userrr.findOneAndUpdate({mail: req.body.mail}, req.body).then(
 		(director: any) => res.status(200).json({"msg": 'director updated successfully', director}),
 		(err: any) => res.status(400).json({"msg": err})

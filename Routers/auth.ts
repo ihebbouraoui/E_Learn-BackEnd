@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const dotenvv = require("dotenv");
 const userModelAuth=require('../Models/userModel')
 const nodemailer = require("nodemailer");
-
+const Formation=require('../Models//formationModel')
+const announce =require('../Models/announceModel')
 dotenvv.config();
 routerr.post('/sendMail', function (req:any, res:any) {
 	let transporter = nodemailer.createTransport({
@@ -15,7 +16,7 @@ routerr.post('/sendMail', function (req:any, res:any) {
 		secure: true,
 		auth: {
 			user: 'ihebbouraoui1234@gmail.com',
-			pass: 'cjthjpeniguqbhuv',
+			pass: 'dilsgfrlhjlcjckl',
 
 		}
 	});
@@ -52,7 +53,7 @@ routerr.post("/", async (req:any, res:any) => {
 			user.password
 		);
 		if (!isCorrectPassword)
-			return res.status(400).json({ msg: "incorrect email or password" });
+			return res.status(450).json({ msg: "incorrect email or password" });
       if (user.status==='false'){
 		  return res.status(600).json({ msg: "Banned" });
 
@@ -71,12 +72,42 @@ routerr.post("/", async (req:any, res:any) => {
 		  }
 
 	} catch (error) {
-		res.status(400).json({'msg':'try again later'});
+		res.status(400).json({msg:'try again later'});
 	}
 });
 routerr.post("/uploads", async (req:any, res:any) => {
 
 })
+routerr.get('/getNumberProf',async (req:any, res:any) =>
+	{
+		await userModelAuth.count({role:'prof'}).then((rec:any)=>{
+			return res.status(200).json(rec)
+		})
+	}
+)
+routerr.get('/getNumberStudent',async (req:any, res:any) =>
+	{
+		await userModelAuth.count({role:'student'}).then((rec:any)=>{
+			return res.status(200).json(rec)
+		})
+	}
+)
+routerr.get('/getNumberFormation',async (req:any, res:any) =>
+	{
+		await announce.count({category:'formation'}).then((rec:any)=>{
+			return res.status(200).json(rec)
+		})
+	}
+)
+
+routerr.get('/getNumberAnnounce',async (req:any, res:any) =>
+	{
+		await announce.count().then((rec:any)=>{
+			return res.status(200).json(rec)
+		})
+	}
+)
+
 
 
 module.exports = routerr;

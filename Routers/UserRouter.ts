@@ -8,11 +8,20 @@ const formidable = require("formidable")
 
 
 rootUser.post('/addUser', async (req: any, res: any) => {
+	const salt = await crypt.genSalt(10);
 
 	const isEmailExist = await User.findOne({mail: req.body.mail});
-	if (isEmailExist)
-		return res.status(400).json({msg: 'email already exist'})
-	const salt = await crypt.genSalt(10);
+	const isPhone=await User.findOne({tel:req.body.tel})
+	try{
+		if (isEmailExist){
+			return res.status(500).json('email already exist')
+		}
+	}catch (err:any){
+		return res.status(500).json('email already exist')}
+
+
+	if(isPhone)
+		return res.status(420).json({'msg': 'phone already exist'})
 	const hashedPassword = await crypt.hash(req.body.password, salt);
 	await new User({
 		name: req.body.name,
