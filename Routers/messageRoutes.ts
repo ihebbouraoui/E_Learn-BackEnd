@@ -19,7 +19,7 @@ routerMessage.post('/testMessage', async (req:any, res:any) => {
 		messageTo:req.body.messageTo,
 		values:req.body.values,
 		avatarFrom:req.body.avatarFrom,
-		avatrTo:req.body.avatrTo,
+		avatarTo:req.body.avatarTo,
 
 	})
 	.save()

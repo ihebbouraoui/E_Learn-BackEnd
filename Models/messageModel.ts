@@ -18,7 +18,7 @@ const MessageSchema = new MessageModel.Schema(
 	messageTo:String,
 	values:String,
 	avatarFrom:String,
-	avatrTo:String,
+	avatarTo:String,
 },
 
 

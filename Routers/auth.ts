@@ -78,6 +78,25 @@ routerr.post("/", async (req:any, res:any) => {
 routerr.post("/uploads", async (req:any, res:any) => {
 
 })
+routerr.get('/checkMail',async (req:any, res:any) =>
+	{
+		  await userModelAuth.findOne({ mail: req.body.mail }).then((rec:any)=>{
+			  return res.status(500).json(rec)
+		  });
+
+	}
+)
+routerr.get('/checkPhone',async (req:any, res:any) =>
+	{
+		let user = await userModelAuth.findOne({ tel: req.body.tel });
+	    try{
+			if (user) return res.status(400).json({msg:'exist'})
+		}catch (error){
+		res.status(400).json({msg:'try again later'});
+	}
+	}
+)
+
 routerr.get('/getNumberProf',async (req:any, res:any) =>
 	{
 		await userModelAuth.count({role:'prof'}).then((rec:any)=>{

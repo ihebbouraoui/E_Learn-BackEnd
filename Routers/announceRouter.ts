@@ -63,6 +63,23 @@ announceRouter.post('/signal', async (req: any, res: any) => {
 		)
 	}
 )
+announceRouter.delete('/signalDelete', async (req: any, res: any) => {
+	await Signal.findByIdAndDelete(req.body.id).then(
+		() => res.status(200).json({"msg": 'prof deleted successfully'}),
+		(err: any) => res.status(400).json({"msg": err})
+	)
+});
+announceRouter.put('/deleteUserFromFormation', async (req: any, res: any) => {
+	return await announces.findByIdAndUpdate(req.body._id, {
+		$unset: {
+			userSubmitted:
+				{
+					userId: req.body.userId,
+				}
+
+		}
+	}).then((el: any) => res.status(200).json({'msg': 'success'}), (err: any) => res.status(500).json({err}))
+})
 announceRouter.post('/newCategory', async (req: any, res: any) => {
 		return await new Category({
 			title:req.body.title,
