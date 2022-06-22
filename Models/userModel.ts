@@ -12,6 +12,8 @@ const userSchema = new mongoUser.Schema({
 	ville:String,
 	specialite:String,
 	role:String,
+	matricule:String,
+	niveaux:String,
 	photo : {
 		type : String
 	},

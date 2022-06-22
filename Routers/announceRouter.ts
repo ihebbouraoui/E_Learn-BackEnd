@@ -105,6 +105,8 @@ announceRouter.post('/newFormation', async (req: any, res: any) => {
 			student: req.body.student,
 			announce: req.body.announce,
 			prof: req.body.prof,
+			date:req.body.date,
+			hour:req.body.hour
 		})
 		.save().then(
 			(rec: any) => res.status(200).json(rec),
@@ -114,6 +116,13 @@ announceRouter.post('/newFormation', async (req: any, res: any) => {
 )
 announceRouter.get('/getMyFormationById', async (req: any, res: any) => {
 	return await Formation.find({student: req.query._id}).populate("student").populate('announce').populate('prof')
+	.then(
+		(rec: any) => res.status(200).json(rec),
+		(err: any) => res.status(500).json({'msg': 'error'})
+	)
+})
+announceRouter.get('/getProfFormation', async (req: any, res: any) => {
+	return await Formation.find({prof: req.query._id}).populate("student").populate('announce').populate('prof')
 	.then(
 		(rec: any) => res.status(200).json(rec),
 		(err: any) => res.status(500).json({'msg': 'error'})

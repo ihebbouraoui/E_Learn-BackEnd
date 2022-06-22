@@ -7,6 +7,8 @@ const formationModel = require('mongoose');
 const formationSchema = new formationModel.Schema({
 	student:{type:Schema.Types.ObjectId,ref:'User'},
 	prof:{type:Schema.Types.ObjectId,ref:'User'},
-	announce:{type:Schema.Types.ObjectId,ref:'Announce'}
+	announce:{type:Schema.Types.ObjectId,ref:'Announce'},
+	date:String,
+	hour:String,
 });
 module.exports = formationModel.model('Formation', formationSchema)

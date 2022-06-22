@@ -33,7 +33,9 @@ rootUser.post('/addUser', async (req: any, res: any) => {
 		cin:req.body.cin,
 		password: hashedPassword,
 		photo:req.body.photo,
-		status:req.body.status
+		status:req.body.status,
+		matricule:req.body.matricule,
+		niveaux:req.body.niveaux,
 	})
 	.save()
 	.then(

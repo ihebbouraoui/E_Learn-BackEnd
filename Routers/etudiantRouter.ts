@@ -31,8 +31,8 @@ routerStudent.get('/student', async (req:any, res:any) => {
 		}
 	)
 })
-routerStudent.get('/detail/:id', async (req:any, res:any) => {
-	await Userr.findById(req.params.id).then(
+routerStudent.get('/getStudentById', async (req:any, res:any) => {
+	await Userr.findById(req.query.id).then(
 		(rec:any) => {
 			if (rec) res.status(200).json(rec);
 			else res.status(400).json({msg: 'error'})
